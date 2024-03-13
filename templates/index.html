@@ -1,1 +1,78 @@
+<!doctype html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Metadata Reader</title>
+    <!-- Tailwind CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.1.2/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+          darkMode: 'class',
+          theme: {
+            extend: {
+              colors: {
+                'dark-bg': '#121212',
+                'dark-card': '#1F1F1F',
+                'dark-accent': '#4F46E5',
+                'dark-text': '#E4E4E7',
+                'dark-secondary': '#A1A1AA',
+                'dark-muted': '#71717A',
+              }
+            }
+          }
+        }
+    </script>
+</head>
+<body class="dark:bg-dark-bg dark:text-dark-text">
 
+<div class="container mx-auto p-4">
+    <div class="max-w-lg mx-auto my-10">
+        <h1 class="text-3xl font-bold text-center mb-4">Image Metadata Reader</h1>
+        <form action="/" method="post" enctype="multipart/form-data" class="mb-5">
+            <div class="flex justify-center items-center w-full">
+                <label class="flex flex-col rounded-lg border-4 border-dashed w-full h-60 p-10 group text-center">
+                    <div class="h-full w-full text-center flex flex-col items-center justify-center">
+                        <p class="pointer-none text-gray-500" id="file-chosen"><span class="text-sm">Drag and drop</span> files here <br> or <span class="text-dark-accent hover:underline">select a file</span> from your computer</p>
+                    </div>
+                    <input type="file" class="hidden" name="file" onchange="document.getElementById('file-chosen').textContent = this.files[0].name">
+                </label>
+            </div>
+            <button type="submit" class="w-full mt-5 py-2 px-4 rounded-lg bg-dark-accent hover:bg-opacity-90 focus:ring-2 focus:ring-opacity-50">Upload and Read Metadata</button>
+        </form>
+
+        {% if metadata %}
+        <div class="metadata-card rounded-lg p-4 mb-5 bg-dark-card">
+            <h2 class="text-xl font-semibold mb-2 text-dark-text">Metadata</h2>
+            <div class="metadata-content text-sm space-y-2">
+                {% for key, value in metadata.items() %}
+                <div class="break-words">
+                    <span class="font-semibold text-dark-accent">{{ key }}:</span>
+                    <span class="text-dark-secondary">{{ value }}</span>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% if image_data %}
+        <div class="image-preview rounded-lg p-4 bg-dark-card">
+            <h2 class="text-xl font-semibold mb-2 text-dark-text">Image Preview</h2>
+            <div class="flex justify-center">
+                <img src="data:image/png;base64,{{ image_data }}" alt="{{ filename }}" class="rounded-lg max-w-full h-auto"/>
+            </div>
+        </div>
+        {% endif %}
+        {% endif %}
+    </div>
+</div>
+
+<script>
+    document.querySelector('.file-input').addEventListener('change', function(){
+        if (this.files.length > 0) {
+            document.getElementById('file-chosen').innerText = this.files[0].name;
+        }
+    });
+</script>
+
+</body>
+</html>
